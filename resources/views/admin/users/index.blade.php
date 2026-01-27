@@ -15,18 +15,18 @@
                 <table id="usersTable" class="table table-bordered table-striped align-middle text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th width="120">Action</th>
+                            <th class="text-center">No</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Email</th>
+                            <th width="120" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($users as $user)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
+                            <td class="text-center">{{ $loop->iteration }}.</td>
+                            <td class="text-center">{{ $user->name }}</td>
+                            <td class="text-center">{{ $user->email }}</td>
                             <td>
                                 <form action="{{ route('admin.users.delete', $user->id) }}" method="POST">
                                     @csrf

@@ -15,24 +15,23 @@
                 <table id="usersTable" class="table table-bordered table-striped  align-middle text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>No</th>
-                            <th>Kode Barang</th>
-                            <th>Nama Produk</th>
-                            <th>Warna</th>
-                            <th>QR Code</th>
-                            <th>Download</th>
-                            <th>Status</th>
-                            <th width="120">Aksi</th>
-
+                            <th class="text-center">No</th>
+                            <th class="text-center">Kode Barang</th>
+                            <th class="text-center">Nama Produk</th>
+                            <th class="text-center">Warna</th>
+                            <th class="text-center">QR Code</th>
+                            <th class="text-center">Download</th>
+                            <th class="text-center">Status</th>
+                            <th width="120" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($produk as $p)
                         <tr>
-                            <td>{{ $loop->iteration }}.</td>
-                            <td>{{ $p->kode_barang }}</td>
-                            <td>{{ $p->nama_produk }}</td>
-                            <td>{{ $p->warna }}</td>
+                            <td class="text-center">{{ $loop->iteration }}.</td>
+                            <td class="text-center">{{ $p->kode_barang }}</td>
+                            <td class="text-center">{{ $p->nama_produk }}</td>
+                            <td class="text-center">{{ $p->warna }}</td>
                             <td>
                                 {!! QrCode::size(50)->generate($p->qr) !!}
                                 <div class="mt-2 small fw-bold">

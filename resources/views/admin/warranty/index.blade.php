@@ -13,15 +13,15 @@
             <table class="table table-bordered table-striped" id="warrantyTable">
                 <thead class="table-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Kode Barang</th>
-                        <th>Nama Produk</th>
-                        <th>Warna</th>
-                        <th>Nama User</th>
-                        <th>Email</th>
-                        <th>Expired At</th>
-                        <th>Status</th>
-                        <th>Tanggal Registrasi</th>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kode Barang</th>
+                        <th class="text-center">Nama Produk</th>
+                        <th class="text-center">Warna</th>
+                        <th class="text-center">Nama User</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center" width="120">Expired At</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Tanggal Registrasi</th>
                     </tr>
                 </thead>
             </table>
@@ -38,7 +38,9 @@ $(function () {
         serverSide: true,
         ajax: "{{ route('admin.warranty.data') }}",
         columns: [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center',render: function (data, type, row, meta) 
+                { return data + '.'; }
+            },
             { data: 'kode_barang', name: 'produk.kode_barang' },
             { data: 'nama_produk', name: 'produk.nama_produk' },
             { data: 'warna', name: 'produk.warna' },
@@ -47,6 +49,12 @@ $(function () {
             { data: 'expired_at', orderable: false, searchable: false },
             { data: 'status', name: 'status', orderable: false, searchable: false },
             { data: 'created_at', name: 'created_at' },
+        ],
+
+        columnDefs: [
+            {
+                className: 'text-center'
+            }
         ]
     });
 });
