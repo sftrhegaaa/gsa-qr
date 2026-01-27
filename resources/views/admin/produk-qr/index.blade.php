@@ -12,7 +12,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle text-center">
+                <table id="usersTable" class="table table-bordered table-striped  align-middle text-center">
                     <thead class="table-dark">
                         <tr>
                             <th>No</th>
@@ -86,3 +86,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+
+<script>
+$(document).ready(function () {
+    $('#usersTable').DataTable({
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        lengthMenu: [5, 10, 25, 50],
+        pageLength: 10,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: "›",
+                previous: "‹"
+            },
+            zeroRecords: "Data tidak ditemukan"
+        }
+    });
+});
+</script>
+@endpush
