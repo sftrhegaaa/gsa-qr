@@ -15,7 +15,6 @@
                             <th class="text-center">Email</th>  
                              <th class="text-center">Nota</th>
                             <th class="text-center">Tanggal Lahir</th>
-                            <th class="text-center">Gender</th>
                             <th class="text-center">Address Information</th>
                         </tr>
                     </thead>
@@ -32,7 +31,6 @@
                                 </a>
                             </td>
                             <td class="text-center">{{ $p->tanggal_lahir }}</td>
-                            <td class="text-center">{{ $p->gender }}</td>
                             <td class="text-center">{!! $p->alamat_admin !!}</td>
 
 
