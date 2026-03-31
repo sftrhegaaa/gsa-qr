@@ -11,10 +11,10 @@
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center">No</th>
-                            <th class="text-center">Nama</th>
+                            <th class="text-center">Name</th>
                             <th class="text-center">Email</th>  
-                             <th class="text-center">Nota</th>
-                            <th class="text-center">Tanggal Lahir</th>
+                             <th class="text-center">Receipt</th>
+                            <th class="text-center">Date of Birth</th>
                             <th class="text-center">Address Information</th>
                         </tr>
                     </thead>
@@ -27,7 +27,7 @@
                             <td>
                               
                                 <a href="{{ asset('storage/nota/'.$p->nota) }}" target="_blank">
-                                    Lihat Nota
+                                    View Receipt
                                 </a>
                             </td>
                             <td class="text-center">{{ $p->tanggal_lahir }}</td>
