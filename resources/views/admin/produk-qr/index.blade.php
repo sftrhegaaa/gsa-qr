@@ -168,9 +168,7 @@ $(document).ready(function () {
 </script>
 <script>
    async function uploadData() {
-
     const file = document.getElementById('fileInput').files[0];
-
     if (!file) {
         alert('Pilih file terlebih dahulu');
         return;
