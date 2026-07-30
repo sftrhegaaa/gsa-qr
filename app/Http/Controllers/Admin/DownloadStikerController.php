@@ -9,7 +9,7 @@ class DownloadStikerController extends Controller
 {
     public function download($kode)
     {
-        $qrUrl = url('/warranty/' . $kode);
+        $qrUrl = url('/gsa/' . $kode);
         $qr = QrCode::format('svg')
         ->size(200)
         ->margin(0)

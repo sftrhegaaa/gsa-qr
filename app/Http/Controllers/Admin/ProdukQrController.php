@@ -24,7 +24,7 @@ class ProdukQrController extends Controller
         $end   = $request->query('end');
 
 
-        return view('admin.produk-qr.index', compact('produk', 'lastId', 'start', 'end'));
+        return view('admin.produk-qr.index', compact('produk', 'lastId', 'start', 'end'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     }
 
      public function create()
@@ -33,48 +33,45 @@ class ProdukQrController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nama_produk' => 'required|string',
-            'warna' => 'required|string',
-            'nama_toko' => 'nullable|string|max:255',
+{
+    $request->validate([
+        'nama_produk' => 'required|string',
+        'warna' => 'required|string',
+        'nama_toko' => 'nullable|string|max:255',
+    ]);
 
-        ]);
+    $slug = Str::upper(
+        Str::slug($request->nama_produk, '-')
+    );
 
-        // slug dari nama produk
-        $slug = Str::upper(
-            Str::slug($request->nama_produk, '-')
-        );
+    $warna = Str::upper($request->warna);
 
-        $warna = Str::upper($request->warna);
+    $count = ProdukQrLog::where('kode_barang', 'like', "{$slug}-{$warna}-%")>count() + 1;
 
+    $kodeBarang = sprintf(
+        '%s-%s-%03d',
+        $slug,
+        $warna,
+        $count
+    );
 
-        // hitung urutan
-        $count = ProdukQrLog::where('kode_barang', 'like', "{$slug}-{$warna}-%")->count() + 1;
+    $qrUrl = url('/warranty/' . $kodeBarang);
 
-        $kodeBarang = sprintf(
-            '%s-%s-%s-%03d',
-            $slug,
-            $warna,
-            $count
-        );
+    $produk = ProdukQrLog::create([
+        'kode_barang' => $kodeBarang,
+        'nama_produk' => $request->nama_produk,
+        'warna' => $warna,
+        'nama_toko' => $request->nama_toko,
+        'qr' => $qrUrl,
+        'status' => 'active',
+    ]);
 
-        // URL QR
-        $qrUrl = url('/warranty/' . $kodeBarang);
+    $this->generateQr($produk->id);
 
-        ProdukQrLog::create([
-            'kode_barang' => $kodeBarang,
-            'nama_produk' => $request->nama_produk,
-            'warna' => $warna,
-            'nama_toko' => $request->nama_toko,
-            'qr' => $qrUrl,
-            'status' => 'active',
-        ]);
-        
-
-        return redirect()->route('admin.produk_qr.index')
-            ->with('success', 'Produk berhasil ditambahkan');
-    }
+    return redirect()
+        ->route('admin.produk_qr.index')
+        ->with('success', 'Produk berhasil ditambahkan');
+}
 
 
     public function edit(ProdukQrLog $produk)

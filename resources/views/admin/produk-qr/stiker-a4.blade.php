@@ -26,7 +26,7 @@ body {
     width: 21mm; 
     height: auto;
     display: block;
-    margin: 0.6mm auto 0 auto;
+    margin: 3mm auto 0 auto;
 }
 
 .kode {
@@ -46,25 +46,65 @@ body {
 
 <body>
 
-@foreach($stickers as $sticker)
+    @foreach($stickers as $sticker)
 
-<div class="label">
-    {{-- <img class="qr" src="{{ asset('storage/'.$sticker->qr_path) }}"> --}}
-    <img class="qr" src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $sticker->qr_path))) }}">
+    <div class="label">
     @php
-    $kode = strtoupper($sticker->kode_barang);
-    $parts = explode('-', $kode);
+        $qrBase64 = null;
 
-    $half = ceil(count($parts)/2);
+        /*
+        * Prioritas pertama:
+        * gunakan file QR yang tersimpan.
+        */
+        if (
+            !empty($sticker->qr_path) &&
+            \Illuminate\Support\Facades\Storage::disk('public')
+                ->exists($sticker->qr_path)
+        ) {
+            $qrBase64 = base64_encode(
+                \Illuminate\Support\Facades\Storage::disk('public')
+                    ->get($sticker->qr_path)
+            );
+        }
 
-    $line1 = implode('-', array_slice($parts, 0, $half));
-    $line2 = implode('-', array_slice($parts, $half));
+        /*
+        * Fallback:
+        * kalau qr_path null atau file hilang,
+        * generate QR langsung dari isi kolom qr.
+        */
+        if (!$qrBase64 && !empty($sticker->qr)) {
+            $qrPng = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+                ->size(300)
+                ->margin(1)
+                ->generate($sticker->qr);
+
+            $qrBase64 = base64_encode($qrPng);
+        }
+    @endphp
+
+    @if ($qrBase64)
+        <img
+            class="qr"
+            src="data:image/png;base64,{{ $qrBase64 }}"
+            alt="QR Code"
+        >
+    @else
+        <div class="qr-missing">
+            QR tidak tersedia
+        </div>
+    @endif
+    {{-- <img class="qr" src="{{ asset('storage/'.$sticker->qr_path) }}"> --}}
+    {{-- <img class="qr" src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $sticker->qr_path))) }}"> --}}
+    @php
+        $kode = strtoupper(trim($sticker->kode_barang));
+
+        // Hilangkan hanya tanda "-" di depan
+        $kode = ltrim($kode, '-');
     @endphp
 
     <div class="kode">
-        {{ $line1 }}<br>
-        {{ $line2 }}
-    </div>
+        {{ $kode }}
+</div>
 </div>
 
 @endforeach
