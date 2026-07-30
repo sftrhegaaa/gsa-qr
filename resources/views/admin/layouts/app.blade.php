@@ -45,7 +45,7 @@
 <div class="d-flex">
     {{-- SIDEBAR --}}
     <div class="sidebar">
-        <h5 class="text-white p-3 mb-0">GSA Admin</h5>
+        <h5 class="text-white p-3 mb-0">GSA min</h5>
 
         <a href="{{ route('dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.users') }}">Users</a>
