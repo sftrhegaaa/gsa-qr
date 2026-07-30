@@ -10,11 +10,25 @@ class WarrantyController extends Controller
 {
     public function create($kode)
     {
-        $produk = ProdukQrLog::where('kode_barang', $kode)
-            ->where('status', 'active')
-            ->firstOrFail();
+          // 1. Ambil produk QR (wajib ada & aktif)
+            $produk = ProdukQrLog::where('kode_barang', $kode)
+                ->where('status', 'active')
+                ->first();
 
-        return view('warranty.create', compact('produk'));
+            if (!$produk) {
+                abort(404, 'QR tidak ditemukan atau tidak aktif');
+            }
+
+            // 2. Cek apakah sudah pernah dipakai
+            $warranty = Warranty::where('produk_qr_log_id', $produk->id)
+                ->exists(); // lebih ringan & cepat
+
+            if ($warranty) {
+                return view('warranty.already-scan');
+            }
+
+            // 3. Kalau belum pernah → boleh isi warranty
+            return view('warranty.create', compact('produk'));
     }
 
     public function store(Request $request, $kode)
@@ -25,21 +39,39 @@ class WarrantyController extends Controller
         $request->validate([
             'nama'          => 'required|string',
             'email'         => 'required|email',
-            'alamat'        => 'required|string',
-            'tempat_lahir'  => 'required|string',
             'tanggal_lahir' => 'required|date',
-            'gender'        => 'required|in:L,P',
+            'gender'        => 'nullable|string',
+            'nota'          => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'country_code'  => 'nullable|string|size:2',
+            'province'      => 'nullable|string',
+            'city'          => 'nullable|string',
+            'district'      => 'nullable|string',
+            'village'       => 'nullable|string',
+            'address'       => 'nullable|string',
         ]);
+
+        $file = $request->file('nota');
+        $filename = uniqid().'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('storage/nota'), $filename);
 
         Warranty::create([
             'produk_qr_log_id' => $produk->id,
             'nama'             => $request->nama,
             'email'            => $request->email,
-            'alamat'           => $request->alamat,
-            'tempat_lahir'     => $request->tempat_lahir,
             'tanggal_lahir'    => $request->tanggal_lahir,
             'gender'           => $request->gender,
-        ]);
+            'country_code' => $request->country_code,
+            'province'     => $request->province,
+            'city'         => $request->city,
+            'district'     => $request->district,
+            'village'      => $request->village,
+            'address'      => $request->address,
+            'state'        => $request->state,
+            'global_city'  => $request->global_city,
+            'nota'    => $filename,
+            ]);
+
+
 
         return redirect()->route('warranty.verified', $produk->kode_barang);
 

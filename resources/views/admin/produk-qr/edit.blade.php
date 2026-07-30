@@ -12,6 +12,12 @@
                 @method('PUT')
 
                 <div class="mb-3">
+                    <label class="form-label">Kode Barang</label>
+                    <input type="text" class="form-control" value="{{ $produk->kode_barang }}" disabled>
+
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">Nama Produk</label>
                     <input type="text"
                            name="nama_produk"
@@ -27,6 +33,14 @@
                            class="form-control"
                            value="{{ $produk->warna }}"
                            required>
+                </div>
+
+                 <div class="mb-3">
+                    <label class="form-label">Nama Toko</label>
+                    <input type="text"
+                           name="nama_toko"
+                           class="form-control"
+                           value="{{ $produk->nama_toko }}">
                 </div>
 
                 <button class="btn btn-primary">

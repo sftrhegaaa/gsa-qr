@@ -45,7 +45,8 @@
                     <h5 class="fw-bold text-center mb-3">WARRANTY TERMS</h5>
 
                     <ol class="small text-start">
-                        <li>The warranty period is valid for 6 (six) months from the date of purchase.</li>
+                        <li>The warranty period for RGB lights is valid for 3 (three) months from the date of purchase.</li>
+                        <li>The warranty period for original single-color lights (Red / Blue / White) is valid for 6 (six) months from the date of purchase.</li>
                         <li>The warranty applies only if all required data is filled in completely.</li>
                         <li>Attach the purchase receipt with the shop date and stamp.</li>
                         <li>Warranty is void if damage occurs due to installation errors by the user.</li>
@@ -54,7 +55,7 @@
 
                     {{-- LOGO UNDER TERMS --}}
                     <div class="text-center mt-4">
-                        <img src="{{ asset('assets/JPA-01.png') }}" class="logo mb-2" alt="GMA Logo">
+                        <img src="{{ asset('assets/LOGO-JPA.png') }}" class="logo mb-2" alt="GMA Logo">
                         <div class="fw-semibold small">Warranty Verification</div>
                     </div>
 
@@ -64,7 +65,7 @@
                 <div class="col-md-6">
 
                     <h5 class="fw-bold text-success mb-3 text-center text-md-start">
-                        Produk Terverifikasi
+                        Product Verified
                     </h5>
 
                     <p class="mb-2">
@@ -73,12 +74,12 @@
                     </p>
 
                     <p class="mb-2">
-                        <strong>Produk:</strong><br>
+                        <strong>Product:</strong><br>
                         {{ $produk->nama_produk }}
                     </p>
 
                     <p class="mb-2">
-                        <strong>Warna:</strong> {{ $produk->warna }}
+                        <strong>Color:</strong> {{ $produk->warna }}
                     </p>
 
                     <p class="mb-0">

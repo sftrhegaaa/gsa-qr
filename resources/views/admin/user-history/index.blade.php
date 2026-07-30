@@ -11,13 +11,11 @@
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center">No</th>
-                            <th class="text-center">Nama</th>
+                            <th class="text-center">Name</th>
                             <th class="text-center">Email</th>  
-                            <th class="text-center">Alamat</th>
-                            <th class="text-center">Tempat Lahir</th>
-                            <th class="text-center">Tanggal Lahir</th>
-                            <th class="text-center">Gender</th>
-
+                             <th class="text-center">Receipt</th>
+                            <th class="text-center">Date of Birth</th>
+                            <th class="text-center">Address Information</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,10 +24,15 @@
                             <td class="text-center">{{ $loop->iteration }}.</td>
                             <td class="text-center">{{ $p->nama }}</td>
                             <td class="text-center">{{ $p->email }}</td>
-                            <td class="text-center">{{ $p->alamat }}</td>
-                            <td class="text-center">{{ $p->tempat_lahir }}</td>
+                            <td>
+                              
+                                <a href="{{ asset('storage/nota/'.$p->nota) }}" target="_blank">
+                                    View Receipt
+                                </a>
+                            </td>
                             <td class="text-center">{{ $p->tanggal_lahir }}</td>
-                            <td class="text-center">{{ $p->gender }}</td>
+                            <td class="text-center">{!! $p->alamat_admin !!}</td>
+
 
                         </tr>
                         @empty

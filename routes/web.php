@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProdukQrController;
 use App\Http\Controllers\Admin\HistoryWarrantyController;
 use App\Http\Controllers\Admin\HistoryUserController;
-
+use App\Http\Controllers\Admin\DownloadStikerController;
+use App\Models\ProdukQrLog;
+use Illuminate\Support\Facades\Http;
 
 
 
@@ -54,6 +56,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     /* DELETE */
     Route::delete('/produk-qr/{produk}', [ProdukQrController::class, 'destroy'])->name('admin.produk_qr.destroy');
 
+    /* IMPORT EXCEL */
+    Route::post('/produk-qr/import', [ProdukQrController::class, 'import'])->name('admin.produk_qr.import');
+
+
     /* Produk QR SVG */
     Route::get('/produk-qr/{id}/svg', [ProdukQrController::class, 'downloadSvg'])->name('admin.produk_qr.svg');
 
@@ -65,13 +71,18 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     /* History User */
     Route::get('/history-user',[HistoryUserController::class, 'index'])->name('admin.user-history.index');
 
+    Route::get('/stiker-import/{lastId}', [ProdukQrController::class, 'downloadA4Pdf'])->name('admin.stiker.import');
+    Route::get('/stiker/{kode}', [DownloadStikerController::class, 'download'])->name('admin.stiker.download');
+    // Route::get('/stiker-a4/{lastId}', [ProdukQrController::class, 'downloadA4Pdf1'])->name('admin.stiker.a4');
+    Route::get('/stiker-a4/{start}/{end}', [ProdukQrController::class, 'downloadA4Pdf'])->name('admin.stiker.a4');
+    Route::post('/import-batch', [ProdukQrController::class, 'importBatch'])->name('admin.produk_qr.import_batch');
+    Route::post('/produk-qr/import-finish/{start}/{end}', [ProdukQrController::class, 'importFinish'])->name('admin.produk_qr.import_finish');
     // Route::get('/produk-qr/{id}/generate', [ProdukQrController::class, 'generateQr'])->name('admin.produk_qr.generate');
 
     // Route::post('/produk-qr/{id}/generate',[ProdukQrController::class, 'generateQr'])->name('admin.produk_qr.generate');
 
 
 });
-
 
     Route::get('/qr/{kode}', [QrController::class, 'show'])->name('qr.index');
 
@@ -81,9 +92,39 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // submit form (POST)
     Route::post('/warranty/{kode_barang}', [WarrantyController::class, 'store'])->name('warranty.store');
 
+    Route::get('/warranty/already-scan', function () { return view('warranty.already-scan'); });
+
     Route::get('/warranty/{kode_barang}/verified',[WarrantyController::class, 'verified'])->name('warranty.verified');
 
 
+    Route::get('/phpinfo', function () {
+        phpinfo();
+    });
+
+    
+    Route::get('/api/indo/provinces', function () {
+        return Http::get(
+            'https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json'
+        )->json();
+    });
+
+    Route::get('/api/indo/regencies/{id}', function ($id) {
+        return Http::get(
+            "https://emsifa.github.io/api-wilayah-indonesia/api/regencies/{$id}.json"
+        )->json();
+    });
+
+    Route::get('/api/indo/districts/{id}', function ($id) {
+        return Http::get(
+            "https://emsifa.github.io/api-wilayah-indonesia/api/districts/{$id}.json"
+        )->json();
+    });
+
+    Route::get('/api/indo/villages/{id}', function ($id) {
+        return Http::get(
+            "https://emsifa.github.io/api-wilayah-indonesia/api/villages/{$id}.json"
+        )->json();
+    });
 
 require __DIR__.'/auth.php';
 

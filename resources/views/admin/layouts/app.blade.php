@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Admin Panel')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 
 
 
@@ -40,7 +45,7 @@
 <div class="d-flex">
     {{-- SIDEBAR --}}
     <div class="sidebar">
-        <h5 class="text-white p-3 mb-0">Warranty Admin</h5>
+        <h5 class="text-white p-3 mb-0">GSA min</h5>
 
         <a href="{{ route('dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.users') }}">Users</a>

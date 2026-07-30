@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('warranties', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('produk_qr_log_id')->constrained('produk_qr_log
-    ')->cascadeOnDelete();
+    $table->foreignId('produk_qr_log_id')->constrained('produk_qr_log')->cascadeOnDelete();
     $table->string('nama');
     $table->string('email');
     $table->text('alamat');
