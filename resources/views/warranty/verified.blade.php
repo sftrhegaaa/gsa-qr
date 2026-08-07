@@ -39,32 +39,11 @@
             </div>
             <div class="row g-4">
 
-                {{-- LEFT --}}
-                <div class="col-md-6 text-center text-md-start">
-
-                    <h5 class="fw-bold text-center mb-3">WARRANTY GSA TERMS</h5>
-
-                    <ol class="small text-start">
-                        <li>The warranty period for RGB lights is valid for 3 (three) months from the date of purchase.</li>
-                        <li>The warranty period for original single-color lights (Red / Blue / White) is valid for 6 (six) months from the date of purchase.</li>
-                        <li>The warranty applies only if all required data is filled in completely.</li>
-                        <li>Attach the purchase receipt with the shop date and stamp.</li>
-                        <li>Warranty is void if damage occurs due to installation errors by the user.</li>
-                        <li>Warranty is void if cable cutting or splicing is done incorrectly.</li>
-                    </ol>
-
-                    {{-- LOGO UNDER TERMS --}}
-                    <div class="text-center mt-4">
-                        <img src="{{ asset('assets/LOGO-JPA.png') }}" class="logo mb-2" alt="GMA Logo">
-                        <div class="fw-semibold small">Warranty Verification</div>
-                    </div>
-
-                </div>
 
                 {{-- RIGHT --}}
-                <div class="col-md-6">
+                <div class="col-md-12 text-md-center">
 
-                    <h5 class="fw-bold text-success mb-3 text-center text-md-start">
+                    <h5 class="fw-bold text-success mb-3 text-center text-md-center">
                         Product Verified
                     </h5>
 
