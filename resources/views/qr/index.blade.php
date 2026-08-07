@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Warranty Verification</title>
+    <title>Warranty GSA Verification</title>
 </head>
 <body>
     <h2>Produk Terverifikasi</h2>

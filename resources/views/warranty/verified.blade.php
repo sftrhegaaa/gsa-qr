@@ -35,14 +35,14 @@
     <div class="card shadow-sm">
         <div class="card-body p-4">
              <div class="text-center">
-                        <img src="{{ asset('assets/LOGO-GMA.png') }}" class="logo mb-2" alt="GMA Logo">
+                        <img src="{{ asset('assets/LOGO_GSA_Final.png') }}" class="logo mb-2" alt="GMA Logo">
             </div>
             <div class="row g-4">
 
                 {{-- LEFT --}}
                 <div class="col-md-6 text-center text-md-start">
 
-                    <h5 class="fw-bold text-center mb-3">WARRANTY TERMS</h5>
+                    <h5 class="fw-bold text-center mb-3">WARRANTY GSA TERMS</h5>
 
                     <ol class="small text-start">
                         <li>The warranty period for RGB lights is valid for 3 (three) months from the date of purchase.</li>

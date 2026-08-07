@@ -51,7 +51,7 @@
                     {{-- LOGO --}}
                     <div class="text-center mb-3">
                         <img 
-                            src="{{ asset('assets/LOGO-GMA.png') }}" 
+                            src="{{ asset('assets/LOGO_GSA_Final.png') }}" 
                             alt="Logo Brand" 
                             style="max-height:70px"
                         >
@@ -59,7 +59,7 @@
 
                     {{-- HEADER --}}
                     <div class="text-center mb-4">
-                        <h4 class="fw-bold">Warranty Registration</h4>
+                        <h4 class="fw-bold">Warranty GSA Registration</h4>
                         <p class="text-muted small mb-0">
                             Please complete the data to activate the product warranty
                         </p>
