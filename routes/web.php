@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\CountryController;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProdukQrController;
@@ -101,7 +102,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         phpinfo();
     });
 
-    
+        #buat api country sendiri
+    Route::get('/api/countries', [CountryController::class, 'index']);
+
     Route::get('/api/indo/provinces', function () {
         return Http::get(
             'https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json'
