@@ -376,6 +376,25 @@ public function importBatch(Request $request)
             $warna = array_pop($parts);
             $namaProduk = implode(' ', $parts);
             $slug = strtoupper(Str::slug($namaProduk, '-'));
+            $existingNumbers = ProdukQrLog::pluck('kode_barang')
+                ->map(function ($kode) {
+                    return (int) substr($kode, strrpos($kode, '-') + 1);
+                })
+                ->filter(fn ($number) => $number > 0)
+                ->unique()
+                ->sort()
+                ->values();
+
+            $count = 1;
+             while ($existingNumbers->contains($count)) {
+                $count++;
+            }
+            $kodeBarang = sprintf(
+                '%s-%s-%03d',
+                $slug,
+                $warna,
+                $count
+            );
 
             $produk = ProdukQrLog::create([
                 'kode_barang' => 'TEMP',
@@ -384,8 +403,6 @@ public function importBatch(Request $request)
                 'qr'          => '',
                 'status'      => 'active',
             ]);
-
-            $kodeBarang = "{$slug}-{$warna}-{$produk->id}";
 
             $produk->update([
                 'kode_barang' => $kodeBarang,
