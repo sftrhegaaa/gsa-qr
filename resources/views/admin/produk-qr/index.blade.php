@@ -54,10 +54,10 @@
         </div>
 
 
-
+{{-- 
         <a href="{{ route('admin.produk_qr.create') }}" class="btn btn-primary btn-sm">
             + Tambah Produk
-        </a>
+        </a> --}}
     </div>
 
     <div class="card shadow-sm">
@@ -189,7 +189,7 @@ $(document).ready(function () {
                 data: 'status',
                 render: function (data) {
                     return `
-                        <span class="badge bg-success">
+                        <span class="badge bg-primary">
                             ${data ?? 'active'}
                         </span>
                     `;
@@ -201,10 +201,16 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (id) {
                     return `
-                        <a href="/admin/produk-qr/${id}/edit"
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
+                       
+
+                        <form action="/admin/produk-qr/${id}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Yakin hapus produk ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm">
+                                Hapus
+                            </button>
+                        </form>
                     `;
                 }
             }
