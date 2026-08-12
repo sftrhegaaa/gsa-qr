@@ -49,6 +49,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/produk-qr/create', [ProdukQrController::class, 'create'])->name('admin.produk_qr.create');
     Route::post('/produk-qr', [ProdukQrController::class, 'store'])->name('admin.produk_qr.store');
 
+    // SERVER-SIDE DATATABLE
+    Route::get('/produk-qr/data', [ProdukQrController::class, 'data'])->name('admin.produk_qr.data');
+
     /* UPDATE */
     Route::get('/produk-qr/{produk}/edit', [ProdukQrController::class, 'edit'])->name('admin.produk_qr.edit');
 
@@ -81,7 +84,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // Route::get('/produk-qr/{id}/generate', [ProdukQrController::class, 'generateQr'])->name('admin.produk_qr.generate');
 
     // Route::post('/produk-qr/{id}/generate',[ProdukQrController::class, 'generateQr'])->name('admin.produk_qr.generate');
-
 
 });
 

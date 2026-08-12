@@ -72,12 +72,13 @@
                             <th class="text-center">Warna</th>
                             <th class="text-center">Nama Toko</th>
                             <th class="text-center">QR Code</th>
-                            <th class="text-center">Download</th>
+                            {{-- <th class="text-center">Download</th> --}}
                             <th class="text-center">Status</th>
                             <th width="120" class="text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody></tbody>
+                    {{-- <tbody>
                         @foreach ($produk as $p)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}.</td>
@@ -86,23 +87,10 @@
                             <td class="text-center">{{ $p->warna }}</td>
                             <td class="text-center">{{ $p->nama_toko }}</td>
                             <td>
-                                {{-- {!! QrCode::size(50)->generate($p->qr) !!} --}}
+                                {!! QrCode::size(50)->generate($p->qr) !!}
                                 <div class="mt-2 small fw-bold">
                                     {{ $p->kode_barang }}
                                 </div>
-                            </td>
-                            <td class="text-center">
-                                 <a
-                                    href="{{ route('admin.produk_qr.svg', $p->id) }}"
-                                    class="btn btn-outline-primary btn-sm d-block px-2 py-1" style="font-size:11px">
-                                    Download QR
-                                </a>
-                                <br>
-                                 <a
-                                    href="{{ route('admin.stiker.download', $p->kode_barang) }}"
-                                    class="btn btn-outline-primary btn-sm d-block px-2 py-1" style="font-size:11px">
-                                    Download Stiker
-                                </a>
                             </td>
 
 
@@ -132,7 +120,7 @@
                         </tr>
                         
                         @endforeach
-                    </tbody>
+                    </tbody> --}}
                 </table>
             </div>
         </div>
@@ -143,6 +131,115 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+$(document).ready(function () {
+
+    $('#usersTable').DataTable({
+        processing: true,
+        serverSide: false,
+
+        ajax: {
+            url: "{{ route('admin.produk_qr.data') }}",
+            dataSrc: 'data',
+            error: function (xhr) {
+                console.error('ERROR:', xhr.responseText);
+            }
+        },
+
+        columns: [
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            {
+                data: 'kode_barang',
+                defaultContent: '-'
+            },
+            {
+                data: 'nama_produk',
+                defaultContent: '-'
+            },
+            {
+                data: 'warna',
+                defaultContent: '-'
+            },
+            {
+                data: 'nama_toko',
+                defaultContent: '-'
+            },
+            {
+                data: 'qr',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    if (!data) return '-';
+
+                    return `
+                        <div class="qr-container">
+                            <div id="qr-${row.id}"></div>
+                            <small class="fw-bold">
+                                ${row.kode_barang}
+                            </small>
+                        </div>
+                    `;
+                }
+            },
+            {
+                data: 'status',
+                render: function (data) {
+                    return `
+                        <span class="badge bg-success">
+                            ${data ?? 'active'}
+                        </span>
+                    `;
+                }
+            },
+            {
+                data: 'id',
+                orderable: false,
+                searchable: false,
+                render: function (id) {
+                    return `
+                        <a href="/admin/produk-qr/${id}/edit"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+                    `;
+                }
+            }
+        ],
+
+        pageLength: 10,
+
+        lengthMenu: [
+            [10, 25, 50, 100],
+            [10, 25, 50, 100]
+        ],
+
+        ordering: false,
+
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            processing: "Memuat data...",
+            zeroRecords: "Data tidak ditemukan",
+            infoEmpty: "Tidak ada data",
+            infoFiltered: "(difilter dari _MAX_ total data)",
+
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: "›",
+                previous: "‹"
+            }
+        }
+    });
+
+});
+</script>
+{{-- <script>
 $(document).ready(function () {
     $('#usersTable').DataTable({
         paging: true,
@@ -165,7 +262,7 @@ $(document).ready(function () {
         }
     });
 });
-</script>
+</script> --}}
 <script>
    async function uploadData() {
     const file = document.getElementById('fileInput').files[0];
