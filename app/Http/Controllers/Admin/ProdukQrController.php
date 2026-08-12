@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProdukQrImport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Yajra\DataTables\Facades\DataTables;
 use App\Jobs\GenerateQrJob;
 
 
@@ -17,16 +18,26 @@ class ProdukQrController extends Controller
 {
     public function index(Request $request)
     {
-        $produk = ProdukQrLog::orderBy('id', 'desc')->get();
+        // $produk = ProdukQrLog::orderBy('id', 'desc')->get();
         $lastId = $request->query('last_id');
 
         $start = $request->query('start');
         $end   = $request->query('end');
 
 
-        return view('admin.produk-qr.index', compact('produk', 'lastId', 'start', 'end'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+        return view('admin.produk-qr.index', compact('lastId', 'start', 'end'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     }
 
+      public function data()
+    {
+        $produk = ProdukQrLog::orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $produk
+        ]);
+    }
+    
      public function create()
     {
         return view('admin.produk-qr.create');
@@ -214,222 +225,134 @@ class ProdukQrController extends Controller
 
 
     public function downloadA4Pdf($start, $end)
-{
-    $data = ProdukQrLog::whereBetween('id', [$start + 1, $end])
-        ->orderBy('id')
-        ->get();
+    {
+        $data = ProdukQrLog::whereBetween('id', [$start + 1, $end])
+            ->orderBy('id')
+            ->get();
 
-    if ($data->isEmpty()) {
-        return back()->with('error', 'Data tidak ditemukan.');
-    }
-
-    foreach ($data as $item) {
-
-        $filename = "stiker-{$item->kode_barang}.png";
-        $path = "qr/" . $filename;
-
-        // 🔥 kalau belum ada file, generate
-        if (!Storage::disk('public')->exists($path)) {
-
-            Storage::disk('public')->makeDirectory('qr');
-
-            $png = QrCode::format('png')
-                ->size(300)
-                ->margin(1)
-                ->generate(url('/warranty/' . $item->kode_barang));
-
-            Storage::disk('public')->put($path, $png);
-
-            $item->update([
-                'qr_path' => $path
-            ]);
-        }
-    }
-
-   $customPaper = [0, 0, 85.04, 56.69]; // 30mm x 20mm
-
-    $pdf = PDF::loadView('admin.produk-qr.stiker-a4', [
-        'stickers' => $data
-    ]);
-
-    $pdf->setPaper($customPaper, 'portrait');
-
-    return $pdf->download('STIKER-A4.pdf');
-}
-
-
-    // public function downloadA4Pdf1($lastId)
-    // {
-
-    //     $data = ProdukQrLog::where('id', '>', $lastId)->get();
-
-
-    //     if ($data->isEmpty()) {
-    //         return back()->with('error', 'Data tidak ditemukan.');
-    //     }
-
-        
-    //     foreach ($data as $item) {
-
-    //         $filename = "stiker-{$item->kode_barang}.png";
-    //         $path = "qr/" . $filename;
-
-    //         // 🔥 cek kalau belum ada file
-    //         if (!Storage::disk('public')->exists($path)) {
-
-    //             Storage::disk('public')->makeDirectory('qr');
-
-    //             $png = QrCode::format('png')
-    //                 ->size(300)
-    //                 ->margin(1)
-    //                 ->generate(url('/warranty/' . $item->kode_barang));
-
-    //             Storage::disk('public')->put($path, $png);
-
-    //             $item->update([
-    //                 'qr_path' => $path
-    //             ]);
-    //         }
-    //     }
-
-    //     $pdf = PDF::loadView('admin.produk-qr.stiker-a4', [
-    //         'stickers' => $data
-    //     ])->setPaper('a4', 'portrait');
-
-    //     return $pdf->download('STIKER-A4.pdf');
-    // }
-
-
-//  public function importBatch(Request $request)
-// {
-//     try {
-
-//         $rows = $request->input('data');
-
-//         if (!$rows) {
-//             return response()->json(['success' => false]);
-//         }
-
-//         foreach ($rows as $row) {
-
-//             $namaLengkap = strtoupper(trim($row['nama_produk'] ?? ''));
-//             if (!$namaLengkap) continue;
-
-//             $parts = explode(' ', $namaLengkap);
-//             $warna = array_pop($parts);
-//             $namaProduk = implode(' ', $parts);
-
-//             $slug = strtoupper(Str::slug($namaProduk, '-'));
-
-//             // 🔥 Insert dulu tanpa kode_barang
-//             $produk = ProdukQrLog::create([
-//                 'kode_barang' => 'TEMP',
-//                 'nama_produk' => $namaProduk,
-//                 'warna'       => $warna,
-//                 'qr'          => '',
-//                 'status'      => 'active',
-//             ]);
-
-//             // 🔥 Pakai ID sebagai nomor unik
-//             $kodeBarang = "JPA-{$slug}-{$warna}-{$produk->id}";
-
-//             $produk->update([
-//                 'kode_barang' => $kodeBarang,
-//                 'qr' => url('/warranty/' . $kodeBarang),
-//             ]);
-//         }
-
-//         return response()->json(['success' => true]);
-
-//     } catch (\Throwable $e) {
-
-//         return response()->json([
-//             'success' => false,
-//             'error' => $e->getMessage()
-//         ]);
-//     }
-// }
-
-public function importBatch(Request $request)
-{
-     try {
-
-        $rows = $request->input('data');
-
-        if (!$rows) {
-            return response()->json(['success' => false]);
+        if ($data->isEmpty()) {
+            return back()->with('error', 'Data tidak ditemukan.');
         }
 
-        // 🔥 Ambil ID sebelum seluruh import dimulai
-        $startId = $request->input('start_id');
+        foreach ($data as $item) {
 
-        if (!$startId) {
-            $startId = ProdukQrLog::max('id') ?? 0;
-        }
+            $filename = "stiker-{$item->kode_barang}.png";
+            $path = "qr/" . $filename;
 
-        foreach ($rows as $row) {
+            // 🔥 kalau belum ada file, generate
+            if (!Storage::disk('public')->exists($path)) {
 
-            $namaLengkap = strtoupper(trim($row['nama_produk'] ?? ''));
-            if (!$namaLengkap) continue;
+                Storage::disk('public')->makeDirectory('qr');
 
-            $parts = explode(' ', $namaLengkap);
-            $warna = array_pop($parts);
-            $namaProduk = implode(' ', $parts);
-            $slug = strtoupper(Str::slug($namaProduk, '-'));
-            $existingNumbers = ProdukQrLog::pluck('kode_barang')
-                ->map(function ($kode) {
-                    return (int) substr($kode, strrpos($kode, '-') + 1);
-                })
-                ->filter(fn ($number) => $number > 0)
-                ->unique()
-                ->sort()
-                ->values();
+                $png = QrCode::format('png')
+                    ->size(300)
+                    ->margin(1)
+                    ->generate(url('/warranty/' . $item->kode_barang));
 
-            $count = 1;
-             while ($existingNumbers->contains($count)) {
-                $count++;
+                Storage::disk('public')->put($path, $png);
+
+                $item->update([
+                    'qr_path' => $path
+                ]);
             }
-            $kodeBarang = sprintf(
-                '%s-%s-%03d',
-                $slug,
-                $warna,
-                $count
-            );
-
-            $produk = ProdukQrLog::create([
-                'kode_barang' => 'TEMP',
-                'nama_produk' => $namaProduk,
-                'warna'       => $warna,
-                'qr'          => '',
-                'status'      => 'active',
-            ]);
-
-            $produk->update([
-                'kode_barang' => $kodeBarang,
-                'qr' => url('/warranty/' . $kodeBarang),
-            ]);
         }
 
-        $endId = ProdukQrLog::max('id');
+    $customPaper = [0, 0, 85.04, 56.69]; // 30mm x 20mm
 
-        return response()->json([
-            'success' => true,
-            'start_id' => $startId,
-            'end_id' => $endId
+        $pdf = PDF::loadView('admin.produk-qr.stiker-a4', [
+            'stickers' => $data
         ]);
 
-    } catch (\Throwable $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ]);
+        $pdf->setPaper($customPaper, 'portrait');
+        $namaProduk = strtoupper(
+        Str::slug($data->first()->nama_produk, '-')
+        );
+
+        return $pdf->download("{$namaProduk}.pdf");
     }
-}
+
+
+    public function importBatch(Request $request)
+    {
+        try {
+
+            $rows = $request->input('data');
+
+            if (!$rows) {
+                return response()->json(['success' => false]);
+            }
+
+            // 🔥 Ambil ID sebelum seluruh import dimulai
+            $startId = $request->input('start_id');
+
+            if (!$startId) {
+                $startId = ProdukQrLog::max('id') ?? 0;
+            }
+
+            foreach ($rows as $row) {
+
+                $namaLengkap = strtoupper(trim($row['nama_produk'] ?? ''));
+                if (!$namaLengkap) continue;
+
+                $parts = explode(' ', $namaLengkap);
+                $warna = array_pop($parts);
+                $namaProduk = implode(' ', $parts);
+                $slug = strtoupper(Str::slug($namaProduk, '-'));
+                $existingNumbers = ProdukQrLog::pluck('kode_barang')
+                    ->map(function ($kode) {
+                        return (int) substr($kode, strrpos($kode, '-') + 1);
+                    })
+                    ->filter(fn ($number) => $number > 0)
+                    ->unique()
+                    ->sort()
+                    ->values();
+
+                $count = 1;
+                while ($existingNumbers->contains($count)) {
+                    $count++;
+                }
+                $kodeBarang = sprintf(
+                    '%s-%s-%03d',
+                    $slug,
+                    $warna,
+                    $count
+                );
+
+                $produk = ProdukQrLog::create([
+                    'kode_barang' => 'TEMP',
+                    'nama_produk' => $namaProduk,
+                    'warna'       => $warna,
+                    'qr'          => '',
+                    'status'      => 'active',
+                ]);
+
+                $produk->update([
+                    'kode_barang' => $kodeBarang,
+                    'qr' => url('/warranty/' . $kodeBarang),
+                ]);
+            }
+
+            $endId = ProdukQrLog::max('id');
+
+            return response()->json([
+                'success' => true,
+                'start_id' => $startId,
+                'end_id' => $endId
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
     public function importFinish( $start, $end)
     {
         
 
         return redirect()->route('admin.produk_qr.index')->with('success', "Import selesai untuk ID {$start} sampai {$end}");
     }
+
     
 }
