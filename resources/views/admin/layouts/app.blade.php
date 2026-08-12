@@ -45,7 +45,7 @@
 <div class="d-flex">
     {{-- SIDEBAR --}}
     <div class="sidebar">
-        <h5 class="text-white p-3 mb-0">GSA min</h5>
+        <h5 class="text-white p-3 mb-0">GSA Admin</h5>
 
         <a href="{{ route('dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.users') }}">Users</a>
@@ -65,6 +65,10 @@
 
     {{-- CONTENT --}}
     <div class="flex-fill p-4">
+              <h1 class="text-center text-xl">
+                GSA WARRANTY SHOCK ABSORBER
+
+             </h1>   
         <h4 class="mb-4">@yield('page-title')</h4>
 
         @if(session('success'))
